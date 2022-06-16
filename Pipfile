@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 flask = "*"
+flask-sqlalchemy = "*"
+flask-httpauth = "==4.7.0"
 
 [dev-packages]
 
