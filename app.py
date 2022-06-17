@@ -67,7 +67,6 @@ def get_sale(name):
             return jsonify(sale)
     return jsonify({'message': 'sale not found'})
 
-
 if __name__ == '__main__':
      app.run(debug=True)
 
