@@ -29,15 +29,14 @@ def get_products():
     return jsonify(products)
 
 #get one product
-@app.route('/products/<string:name>', methods=['GET'])
-@auth.login_required
-def get_product(name):
-    for product in products:
-        if product['name'] == name:
-            return jsonify(product)
-    return jsonify({'message': 'product not found'})
 
-#add_product
+@app.route('/products/<string:product_id>', methods=['GET'])
+def get_product(product_id):
+    product = [product for product in products if product['product_id'] == product_id]
+    if len(product) == 0:
+        return jsonify({'message': 'Product not found'})
+    return jsonify(product[0])
+
 @app.route('/products', methods=['POST'])
 @auth.login_required
 def create_product():
@@ -70,4 +69,5 @@ def get_sale(name):
 
 
 if __name__ == '__main__':
-    app.run(host = "localhost", port =8000,debug=True)
+     app.run(host = "localhost", port =8000,debug=True)
+
