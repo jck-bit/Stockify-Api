@@ -1,3 +1,4 @@
+
 products = [
     {"name":"rice", "Category":"Food", "Quantity":348, "product_id":"1"},
     {"name":"sunglasses", "Category":"Fashion", "Quantity":324, "product_id":"2"},
