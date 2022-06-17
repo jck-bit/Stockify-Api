@@ -13,10 +13,10 @@ def get_products():
     return jsonify(products)
 
 #get one product
-@app.route('/products/<string:name>', methods=['GET'])
-def get_product(name):
+@app.route('/products/<string:product_id>', methods=['GET'])
+def get_product(product_id):
     for product in products:
-        if product['name'] == name:
+        if product['product_id'] == product_id:
             return jsonify(product)
     return jsonify({'message': 'product not found'})
 
@@ -39,4 +39,4 @@ def delete_product(name):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+     app.run(host = "localhost", port =8000,debug=True)
