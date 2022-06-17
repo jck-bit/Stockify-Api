@@ -14,7 +14,9 @@
 
 
 # Badges
-[![Build Status](https://travis-ci.org/ali-irawan/xtra.svg?branch=master)](https://app.travis-ci.com/github/jck-bit/store_backend-prototype)
+
+[![Build Status](https://app.travis-ci.com/jck-bit/store_backend-prototype.svg?branch=master)](https://app.travis-ci.com/jck-bit/store_backend-prototype)
+
 [![Download](https://poser.pugx.org/ali-irawan/xtra/d/total.svg)](https://poser.pugx.org/ali-irawan/xtra/d/total.svg)
 [![Stable](https://poser.pugx.org/ali-irawan/xtra/v/stable.svg)](https://poser.pugx.org/ali-irawan/xtra/v/stable.svg)
 [![Unstable](https://poser.pugx.org/ali-irawan/xtra/v/unstable.svg)](https://poser.pugx.org/ali-irawan/xtra/v/unstable.svg)
