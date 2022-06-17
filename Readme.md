@@ -4,14 +4,18 @@
  No data is stored in the database.
 
  ## Features
-    * []: # Admin can add, edit, delete products
-    * []: # Attendant can create sale orders,
-    * []: # Admin can view sales orders 
-    * []: # sales can be viewed by attendant
+    *  Admin can add, edit, delete products
+    *  Attendant can create sale orders,
+    *  Admin can view sales orders 
+    *  sales can be viewed by attendant
 
 # Author: 
- [jck-bit]
+ [jck-bit](https://github.com/jck-bit)
 
-    # License:
-    []: # MIT
-    
+
+# Badges
+[![Build Status](https://travis-ci.org/ali-irawan/xtra.svg?branch=master)](https://app.travis-ci.com/github/jck-bit/store_backend-prototype)
+[![Download](https://poser.pugx.org/ali-irawan/xtra/d/total.svg)](https://poser.pugx.org/ali-irawan/xtra/d/total.svg)
+[![Stable](https://poser.pugx.org/ali-irawan/xtra/v/stable.svg)](https://poser.pugx.org/ali-irawan/xtra/v/stable.svg)
+[![Unstable](https://poser.pugx.org/ali-irawan/xtra/v/unstable.svg)](https://poser.pugx.org/ali-irawan/xtra/v/unstable.svg)
+[![License](https://poser.pugx.org/ali-irawan/xtra/license.svg)](https://poser.pugx.org/ali-irawan/xtra/license.svg)
