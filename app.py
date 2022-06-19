@@ -25,6 +25,7 @@ def index():
 
 @app.route('/products', methods=['GET'])
 @auth.login_required
+
 def get_products():
     return jsonify(products)
 
@@ -69,4 +70,3 @@ def get_sale(name):
 
 if __name__ == '__main__':
      app.run(debug=True)
-
