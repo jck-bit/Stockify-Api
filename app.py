@@ -24,7 +24,7 @@ def index():
     return jsonify({'message': 'Welcome to the API'})   
 
 @app.route('/products', methods=['GET'])
-@auth.login_required
+# @auth.login_required
 
 def get_products():
     return jsonify(products)
