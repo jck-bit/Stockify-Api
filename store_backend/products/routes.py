@@ -5,7 +5,6 @@ from store_backend.models import Product
 
 products = Blueprint('products', __name__)
 
-
 @products.route('/products', methods=['POST'])
 def post_product():
     data = request.get_json()
