@@ -26,15 +26,6 @@ PyGObject==3.36.0
 PyJWT==2.4.0
 pylibacl==0.5.4
 pyparsing==2.4.6
-PyQt5==5.15.4
-PyQt5-sip==12.9.0
-python-apt==2.0.0+ubuntu0.20.4.7
-python-debian===0.1.36ubuntu1
-python-xapp==2.2.1
-pyxattr==0.6.1
-pyxdg==0.26
-PyYAML==5.3.1
-reportlab==3.5.34
 requests==2.22.0
 requests-unixsocket==0.2.0
 SecretStorage==2.3.1
