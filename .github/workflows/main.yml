@@ -24,4 +24,4 @@ jobs:
 
       - name: Run the main.py file
         run: |
-          python3 main.py
+          python main.py
