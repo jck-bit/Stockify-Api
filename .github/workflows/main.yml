@@ -19,7 +19,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip3 install requirements.txt
+          pip3 install -r requirements.txt
           pip3 install build
 
       - name: Run the main.py file
