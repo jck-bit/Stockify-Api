@@ -32,6 +32,4 @@ SecretStorage==2.3.1
 SQLAlchemy==1.4.40
 Werkzeug==2.2.2
 WTForms==3.0.1
-xkit==0.0.0
-xlrd==1.1.0
 zipp==3.8.1
