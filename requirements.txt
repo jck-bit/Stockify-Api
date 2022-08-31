@@ -23,7 +23,6 @@ lxml==4.5.0
 Markdown==3.1.1
 MarkupSafe==2.1.1
 PyJWT==2.4.0
-pylibacl==0.5.4
 pyparsing==2.4.6
 requests==2.22.0
 requests-unixsocket==0.2.0
