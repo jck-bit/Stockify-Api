@@ -22,7 +22,6 @@ Jinja2==3.1.2
 lxml==4.5.0
 Markdown==3.1.1
 MarkupSafe==2.1.1
-PyGObject==3.36.0
 PyJWT==2.4.0
 pylibacl==0.5.4
 pyparsing==2.4.6
