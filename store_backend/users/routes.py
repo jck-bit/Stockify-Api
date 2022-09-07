@@ -4,7 +4,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from store_backend import db
 from store_backend.models import User
 
-
 users = Blueprint('users', __name__)
 
 @users.route('/')
