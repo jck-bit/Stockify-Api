@@ -7,8 +7,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 
 db = SQLAlchemy(app)
 
-from store_backend.users.routes import users
+
 from store_backend.products.routes import products
+from store_backend.users.routes import users
 
 app.register_blueprint(users)
 app.register_blueprint(products)
