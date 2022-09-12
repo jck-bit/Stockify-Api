@@ -1,16 +1,12 @@
-from hashlib import new
 from unicodedata import name
 from flask import Blueprint,jsonify, request
 from store_backend import db
 from store_backend.models import Sales, User
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
+from flask_mail import Message
 
 users = Blueprint('users', __name__)
-
-
-
-
 
 @users.route('/users', methods=['POST'])
 def create_user():
@@ -46,7 +42,6 @@ def get_all_users():
 def get_one_user(public_id):
 
     user = User.query.filter_by(public_id=public_id).first()
-
     if not user:
         return jsonify({"user not found"})
 
@@ -61,3 +56,23 @@ def get_one_user(public_id):
 
     return jsonify({"user": user_data})
 
+@users.route('/login', methods=['POST'])
+def login():
+
+    data = request.get_json()
+    name = "".join(data['name'].split())
+    password = "".join(data['password'].split())
+
+    if name == '':
+        msg = 'Username cannot be empty'
+        return {"status":"Failed!" ,"message": msg},400
+    if password == '':
+        msg = 'The password Field cannot be empty'
+        return {"status":"Failed!" ,"message": msg},400
+    user = User.query_by(name)
+    if not user or not check_password_hash(user[4], password):
+        return {"status":"Failed", "message":"Invalid credentials"}, 400
+    
+    return {"status":"Success"}
+
+    
