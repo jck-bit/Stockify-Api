@@ -69,7 +69,8 @@ def login():
     if password == '':
         msg = 'The password Field cannot be empty'
         return {"status":"Failed!" ,"message": msg},400
-    user = User.query_by(name)
+
+    user =User.query.filter_by(name=data['name'])
     if not user or not check_password_hash(user[4], password):
         return {"status":"Failed", "message":"Invalid credentials"}, 400
     
