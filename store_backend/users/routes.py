@@ -72,6 +72,8 @@ def login():
         if password == '':
            msg = 'The password Field cannot be empty'
            return {"status":"Failed!" ,"message": msg},400
+        else:
+            return {"status" "500"}, 500
     
     access_token = create_access_token(identity=name)
     response = {"access_token": access_token}
