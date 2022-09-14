@@ -68,7 +68,7 @@ def login():
     if name != "test" and password != "test":
         if  name == '':
             msg = 'username field cannot be empty'
-            return {"status":"Failed!" ,"message":msg},400
+            return {"status":"Failed!" ,"message": msg},400
         if password == '':
            msg = 'The password Field cannot be empty'
            return {"status":"Failed!" ,"message": msg},400
