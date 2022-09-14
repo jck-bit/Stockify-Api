@@ -60,7 +60,7 @@ def get_one_user(public_id):
 
     return jsonify({"user": user_data})
 
-@users.route('/login', methods=['POST'])
+@users.route('/users/login', methods=['POST'])
 def login():
     name = request.json.get("name", None)
     password = request.json.get("pasword", None)
