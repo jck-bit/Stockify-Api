@@ -1,10 +1,14 @@
-from unicodedata import name
+from os import access
+from socket import MsgFlag
+from urllib import response
 from flask import Blueprint,jsonify, request
 from store_backend import db
 from store_backend.models import Sales, User
 from werkzeug.security import generate_password_hash, check_password_hash
 import uuid
 from flask_mail import Message
+from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
+                               unset_jwt_cookies, jwt_required
 
 users = Blueprint('users', __name__)
 
@@ -23,7 +27,7 @@ def create_user():
 @users.route('/users', methods=['GET'])
 def get_all_users():
     users = User.query.all()
-
+    
     output = []
 
     for user in users:
@@ -58,22 +62,19 @@ def get_one_user(public_id):
 
 @users.route('/login', methods=['POST'])
 def login():
+    name = request.json.get("name", None)
+    password = request.json.get("pasword", None)
 
-    data = request.get_json()
-    name = "".join(data['name'].split())
-    password = "".join(data['password'].split())
-
-    if name == '':
-        msg = 'Username cannot be empty'
-        return {"status":"Failed!" ,"message": msg},400
-    if password == '':
-        msg = 'The password Field cannot be empty'
-        return {"status":"Failed!" ,"message": msg},400
-
-    user =User.query.filter_by(name=data['name'])
-    if not user or not check_password_hash(user[4], password):
-        return {"status":"Failed", "message":"Invalid credentials"}, 400
+    if name != "test" and password != "test":
+        if  name == '':
+            msg = 'username field cannot be empty'
+            return {"status":"Failed!" ,"message":msg},400
+        if password == '':
+           msg = 'The password Field cannot be empty'
+           return {"status":"Failed!" ,"message": msg},400
     
-    return {"status":"Success"}
-
+    access_token = create_access_token(identity=name)
+    response = {"access_token": access_token}
+    return {"status":"Success", "response": response}
+    
     
