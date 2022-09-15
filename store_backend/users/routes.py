@@ -1,6 +1,3 @@
-from os import access
-from socket import MsgFlag
-from urllib import response
 from flask import Blueprint,jsonify, request
 from store_backend import db
 from store_backend.models import Sales, User
