@@ -2,7 +2,6 @@ from flask import Blueprint,jsonify,request
 from store_backend import db
 from store_backend.models import Product
 
-
 products = Blueprint('products', __name__)
 
 @products.route('/products', methods=['POST'])
@@ -37,6 +36,7 @@ def get_one_product(name):
     product = Product.query.filter_by(name=name).first()
 
     if not product:
+
         return jsonify({'message': 'No product found'})
 
     product_data = {}
