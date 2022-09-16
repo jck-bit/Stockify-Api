@@ -1,11 +1,13 @@
-from flask import Blueprint,jsonify, request
-from store_backend import db
+from crypt import methods
+from flask import Blueprint,jsonify, request,make_response
+from store_backend import db, app
 from store_backend.models import Sales, User
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_user, current_user, logout_user, login_required
 import uuid
 from flask_mail import Message
-from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
-                               unset_jwt_cookies, jwt_required
+from flask_jwt_extended import create_access_token
+
 
 users = Blueprint('users', __name__)
 
@@ -14,7 +16,7 @@ def create_user():
     data = request.get_json()
     
     hashed_password = generate_password_hash(data['password'], method='sha256')
-    new_user = User(public_id=str(uuid.uuid4()), name=data['name'], password=hashed_password, admin=False)
+    new_user = User(public_id=str(uuid.uuid4()), username=data['username'], password=hashed_password, admin=False)
 
     db.session.add(new_user)
     db.session.commit()
@@ -29,7 +31,7 @@ def get_all_users():
 
     for user in users:
         user_data = {}
-        user_data['name'] = user.name
+        user_data['username'] = user.username
         user_data['image_file'] = user.image_file
         user_data['public_id'] = user.public_id
         user_data['password'] = user.password
@@ -48,7 +50,7 @@ def get_one_user(public_id):
 
     user_data = {}
 
-    user_data['name'] = user.name
+    user_data['username'] = user.username
     user_data['public_id'] = user.public_id
     user_data['admin'] = user.admin
     user_data['password'] = user.password
@@ -57,23 +59,26 @@ def get_one_user(public_id):
 
     return jsonify({"user": user_data})
 
-@users.route('/users/login', methods=['POST'])
-def login():
-    name = request.json.get("name", None)
-    password = request.json.get("pasword", None)
 
-    if name != "test" and password != "test":
-        if  name == '':
-            msg = 'username field cannot be empty'
-            return {"status":"Failed!" ,"message": msg},400
-        if password == '':
-           msg = 'The password Field cannot be empty'
-           return {"status":"Failed!" ,"message": msg},400
-        else:
-            return {"status" "500"}, 500
+
+@users.route('/login', methods=["POST"])
+def create_token():
+
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
     
-    access_token = create_access_token(identity=name)
-    response = {"access_token": access_token}
-    return {"status":"Success", "response": response}
+    if username == "":
+        msg = "The username field cannot be empty"
+        return {"status": "Failed", "message": msg},401
+    if password == "":
+         msg = "The password field cannot be empty"
+         return {"status": "Failed", "message": msg}, 401
     
+    user = User.query.filter_by(username=username).first()
+
+    if not user or not check_password_hash(user.password, password):
+        return {"status":"Failed","message": "Invalid username or password"}, 401
     
+    access_token = create_access_token(identity=username)
+    return  {"status":"success","token":access_token}, 200
+  
