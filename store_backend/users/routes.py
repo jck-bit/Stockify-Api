@@ -7,8 +7,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 import uuid
 from flask_mail import Message
 from flask_jwt_extended import create_access_token
-import jwt
-import datetime
+
 
 users = Blueprint('users', __name__)
 
