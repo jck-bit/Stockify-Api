@@ -9,6 +9,8 @@ flask-sqlalchemy = "*"
 gunicorn = "*"
 flask-mail = "*"
 flask-jwt-extended = "*"
+flask-cors = "*"
+flask-login = "*"
 
 [dev-packages]
 

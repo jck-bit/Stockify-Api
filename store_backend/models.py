@@ -1,10 +1,11 @@
 from store_backend import db
 from datetime import datetime
+from flask_login import UserMixin
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     public_id = db.Column(db.String(50), unique=True)
-    name = db.Column(db.String(50))
+    username = db.Column(db.String(50))
     password = db.Column(db.String(50))
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     admin = db.Column(db.Boolean)
