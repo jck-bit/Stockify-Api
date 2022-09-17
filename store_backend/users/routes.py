@@ -1,3 +1,4 @@
+from lib2to3.pgen2 import token
 from flask import Blueprint,jsonify, request,make_response
 from store_backend import db, app
 from store_backend.models import Sales, User
@@ -6,17 +7,16 @@ from flask_login import login_user, current_user, logout_user, login_required
 import uuid
 from flask_mail import Message
 from flask_jwt_extended import create_access_token
+from functools import wraps
 
 
 users = Blueprint('users', __name__)
-
-
 
 @users.route('/users', methods=['GET'])
 @login_required
 def get_all_users():
     users = User.query.all()
-     
+    
     output = []
 
     for user in users:
@@ -88,10 +88,6 @@ def create_token():
 
 @users.route('/users', methods=['POST'])
 def create_user():
-
-    # if not current_user.admin:
-    #     msg = "Cannot perform that function"
-    #     return {"status":"Failed", "message": msg},401
     
     username = request.json.get("username", None)
     password = request.json.get("password", None)
@@ -106,18 +102,19 @@ def create_user():
         return {"status": "Failed", "message": msg}, 401
     
     if confirm_password != password:
-        msg = "The two passwords dont match"
+        msg = "The two passwords must match"
         return {"status": "Failed", "message": msg}, 401
     
     user = User.query.filter_by(username=username).first()
-
+    
+    
     if user:
         msg = "User alraedy exists.Try another username"
         return {"status": "Failed", "message": msg}, 401
-    
     
     new_user = User(public_id=str(uuid.uuid4()), username=username, password=generate_password_hash(password), admin=False)
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": "New user created"})
+    msg = "New user created"
+    return {"status":"success","message":msg}
