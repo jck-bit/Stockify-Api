@@ -1,6 +1,10 @@
-from store_backend import db
+from store_backend import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
+
+@login_manager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
