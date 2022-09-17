@@ -1,4 +1,3 @@
-from lib2to3.pgen2 import token
 from flask import Blueprint,jsonify, request,make_response
 from store_backend import db, app
 from store_backend.models import Sales, User
@@ -13,7 +12,6 @@ from functools import wraps
 users = Blueprint('users', __name__)
 
 @users.route('/users', methods=['GET'])
-@login_required
 def get_all_users():
     users = User.query.all()
     
