@@ -16,7 +16,8 @@ users = Blueprint('users', __name__)
 def get_all_users():
 
     if not current_user.admin:
-        return jsonify({"message": "You are not authorizeed to do that"})
+        msg = "You are not authorized to do that"
+        return {"status": "Failed", "message": msg}, 401       
 
     users = User.query.all()
     
