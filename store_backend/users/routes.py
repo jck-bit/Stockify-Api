@@ -6,13 +6,18 @@ from flask_login import login_user, current_user, logout_user, login_required
 import uuid
 from flask_mail import Message
 from flask_jwt_extended import create_access_token
-from functools import wraps
+
 
 
 users = Blueprint('users', __name__)
 
 @users.route('/users', methods=['GET'])
+@login_required
 def get_all_users():
+
+    if not current_user.admin:
+        return jsonify({"message": "You are not authorizeed to do that"})
+
     users = User.query.all()
     
     output = []
@@ -86,6 +91,9 @@ def create_token():
 
 @users.route('/users/new_account', methods=['POST'])
 def create_user():
+
+
+
     
     username = request.json.get("username", None)
     password = request.json.get("password", None)
