@@ -15,9 +15,9 @@ users = Blueprint('users', __name__)
 @login_required
 def get_all_users():
 
-    if not current_user.admin:
-        msg = "You are not authorized to do that"
-        return {"status": "Failed", "message": msg}, 401       
+    # if not current_user.admin:
+    #     msg = "You are not authorized to do that"
+    #     return {"status": "Failed", "message": msg}, 401       
 
     users = User.query.all()
     
