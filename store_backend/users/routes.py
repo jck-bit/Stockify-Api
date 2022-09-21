@@ -12,7 +12,6 @@ from flask_jwt_extended import create_access_token
 users = Blueprint('users', __name__)
 
 @users.route('/users', methods=['GET'])
-@login_required
 def get_all_users():
 
     # if not current_user.admin:
