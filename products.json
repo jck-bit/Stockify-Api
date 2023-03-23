@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Product 1",
+        "date_added": "2023-03-23 12:00:00",
+        "price": 9.99,
+        "quantity": 100
+    },
+    {
+        "name": "Product 2",
+        "date_added": "2023-03-23 12:00:00",
+        "price": 19.99,
+        "quantity": 50
+    },
+    {
+        "name": "Product 3",
+        "date_added": "2023-03-23 12:00:00",
+        "price": 29.99,
+        "quantity": 75
+    },
+    {
+        "name": "Product 4",
+        "date_added": "2023-03-23 12:00:00",
+        "price": 39.99,
+        "quantity": 25
+    },
+    {
+        "name": "Product 5",
+        "date_added": "2023-03-23 12:00:00",
+        "price": 49.99,
+        "quantity": 60
+    },
+    {
+        "name": "Product 6",
+        "date_added": "2023-03-23 12:00:00",
+        "price": 59.99,
+        "quantity": 40
+    }
+]
