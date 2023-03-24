@@ -4,6 +4,8 @@ from store_backend.models import Product
 
 products = Blueprint('products', __name__)
 
+
+
 @products.route('/products', methods=['POST'])
 def post_product():
     data = request.get_json()
@@ -18,14 +20,18 @@ def post_product():
 def get_all_products():
     products = Product.query.all()
 
+    if not products:
+        return jsonify({'products': []})
+
     output = []
 
     for product in products:
         
         product_data = {}
+        product_data['id'] = product.id
         product_data['name'] = product.name
         product_data['price'] = product.price
-        product_data['Quantity'] = product.Quantity
+        product_data['Quantity'] = product.quantity
         output.append(product_data)
 
     return jsonify({'products': output})

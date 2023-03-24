@@ -2,9 +2,9 @@ from store_backend import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
 
-@login_manager.user_loader
-def load_user(id):
-    return User.query.get(int(id))
+# @login_manager.user_loader
+# def load_user(id):
+#     return User.query.get(int(id))
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -20,19 +20,20 @@ class User(db.Model, UserMixin):
 
 class Sales(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
     total_sales = db.Column(db.Integer)
     date_sold = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False) 
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f"Sales('{self.name}', '{self.total_sales}','{self.date_sold}')"
+        return f"Sales('{self.total_sales}','{self.date_sold}')"
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     price = db.Column(db.Integer)
-    Quantity = db.Column(db.Integer)
+    date_added = db.Column(db.DateTime, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
 
     def __repr__(self):
-        return f"Products('{self.name}', '{self.price}','{self.Quantity}')"
+        return f"Products('{self.name}', '{self.price}','{self.quantity}')"
