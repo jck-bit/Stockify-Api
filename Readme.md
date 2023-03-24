@@ -8,7 +8,7 @@ To get started, clone this repository and install the dependencies:
 
 run
 ```
-git clone https://github.com/jck-bit/store_backend-prototype
+git clone https://github.com/jck-bit/store-manager-backend.git
 ```
 install requirements
 
