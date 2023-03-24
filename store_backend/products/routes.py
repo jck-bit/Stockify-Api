@@ -31,7 +31,7 @@ def get_all_products():
         product_data['id'] = product.id
         product_data['name'] = product.name
         product_data['price'] = product.price
-        product_data['Quantity'] = product.quantity
+        product_data['quantity'] = product.quantity
         output.append(product_data)
 
     return jsonify({'products': output})
@@ -47,7 +47,7 @@ def get_one_product(name):
     product_data = {}
     product_data['name'] = product.name
     product_data['price'] = product.price
-    product_data['Quantity'] = product.Quantity
+    product_data['quantity'] = product.quantity
 
     return jsonify(product_data)
 

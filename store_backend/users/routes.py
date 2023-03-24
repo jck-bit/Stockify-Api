@@ -1,4 +1,4 @@
-from flask import Blueprint,jsonify, request,make_response
+from flask import Blueprint,jsonify, request
 from store_backend import db, app
 from store_backend.models import Sales, User,Product
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -121,7 +121,7 @@ def create_sale():
     if int(quantity) > int(product.quantity):
         return jsonify({'error': 'Requested quantity is not available'})
 
-    total_sales = int(product.price) * int(quantity)
+    total_sales = float(product.price) * int(quantity)
  
     product.quantity -= int(quantity)
 
