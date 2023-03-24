@@ -74,7 +74,7 @@ def create_token():
     return  {"status":"success","token":access_token}, 200
 
 
-@users.route('/users/new_account', methods=['POST'])
+@users.route('/users/auth', methods=['POST'])
 def create_user():
 
     
