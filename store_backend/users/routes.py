@@ -95,7 +95,6 @@ def create_user():
     
     user = User.query.filter_by(username=username).first()
     
-    
     if user:
         msg = "User alraedy exists.Try another username"
         return {"status": "Failed", "message": msg}, 401
