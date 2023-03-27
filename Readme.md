@@ -1,4 +1,4 @@
-# store-manger backend   My Shopping API 🛒
+# Stockify Store Management is a Shopping API 🛒
  This is a backend for the store-manager. its has been written in pyhton using flask it allows users to interact with a virtual store, where they can view products and make purchases.
 
 
