@@ -13,8 +13,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(50))
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     admin = db.Column(db.Boolean)
-    sales = db.relationship('Sales', backref='author', lazy=True)
-
+    sales = db.relationship('Sales', backref='user', lazy='dynamic',
+                        primaryjoin="User.id == Sales.user_id")
     def __repr__(self) :
         return f"User('{self.name}', '{self.sales}', '{self.public_id}')"
 
