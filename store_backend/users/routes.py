@@ -17,7 +17,15 @@ def get_all_users():
     if not users:
         return jsonify({'users': []})
     
-    return jsonify({'users': [{'id': user.id, 'username': user.username} for user in users]})
+    user_list = []
+    for user in users:
+        sales_list = []
+        for sale in user.sales.all():
+            sales_list.append({'id': sale.id, 'total_sales': sale.total_sales, 'date_sold': sale.date_sold})
+        user_dict = {'id': user.id, 'username': user.username, 'sales': sales_list}
+        user_list.append(user_dict)
+    
+    return jsonify({'users': user_list})
 
 @users.route('/users/<public_id>', methods=['GET'])
 def get_one_user(public_id):
