@@ -42,7 +42,6 @@ def get_one_user(public_id):
     user_data['password'] = user.password
     user_data['image_file'] = user.image_file
     user_data['sales'] = user.sales
-    
 
     return jsonify({"user": user_data})
 
@@ -79,7 +78,6 @@ def create_token():
     login_user(user)
     access_token = create_access_token(identity=username)
     return  {"status":"success","token":access_token}, 200
-
 
 @users.route('/users/auth', methods=['POST'])
 def create_user():

@@ -8,7 +8,9 @@ def get_all_sales():
 
     sales = Sales.query.all()
     
-    return jsonify({'sales': [{'id': sale.id, 'total_sale':sale.total_sales, 'user': sale.user_id, 'date':sale.date_sold, 'product':sale.product_id} for sale in sales]})
+    return jsonify({'sales': [{'id': sale.id, 
+                               'total_sale':sale.total_sales, 'user': sale.user_id, 
+                               'date':sale.date_sold, 'product':sale.product_id} for sale in sales]})
 
 @sales.route('/sales/<id>')
 def get_sale_by_id(id):
