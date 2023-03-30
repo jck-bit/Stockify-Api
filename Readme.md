@@ -139,4 +139,5 @@ Contributions to this project are always welcome!
 
 # Badges
 
-![Vercel](https://vercelbadge.vercel.app/api/[jck-bit]/[https://github.com/jck-bit/Stockify-Store-Management.git])
+![Vercel](https://vercelbadge.vercel.app/api/jck-bit/Stockify-Store-Management)
+
