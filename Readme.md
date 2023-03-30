@@ -139,6 +139,4 @@ Contributions to this project are always welcome!
 
 # Badges
 
-[![Build Status](https://app.travis-ci.com/jck-bit/store_backend-prototype.svg?branch=master)](https://app.travis-ci.com/jck-bit/store_backend-prototype)
-[![Coverage Status](https://coveralls.io/repos/github/jck-bit/store_backend-prototype/badge.svg?branch=master)](https://coveralls.io/github/jck-bit/store_backend-prototype?branch=master)
-[![CI](https://github.com/jck-bit/store_backend-prototype/actions/workflows/main.yml/badge.svg)](https://github.com/jck-bit/store_backend-prototype/actions/workflows/main.yml)
+![Vercel](https://vercelbadge.vercel.app/api/[jck-bit]/[https://github.com/jck-bit/Stockify-Store-Management.git])
