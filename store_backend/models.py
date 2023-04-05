@@ -1,10 +1,11 @@
 from store_backend import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
 
-# @login_manager.user_loader
-# def load_user(id):
-#     return User.query.get(int(id))
+@login_manager.user_loader
+def user_loader(user_id):
+    return User.query.get(user_id)
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
@@ -15,8 +16,17 @@ class User(db.Model, UserMixin):
     admin = db.Column(db.Boolean)
     sales = db.relationship('Sales', backref='user', lazy='dynamic',
                         primaryjoin="User.id == Sales.user_id")
-    def __repr__(self) :
+    def __repr__ (self) :
         return f"User('{self.name}', '{self.sales}', '{self.public_id}')"
+    
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def  check_password(self, password):
+        return check_password_hash(self.password, password)
+    
+    def get_user_by_username(username):
+        return User.query.filter_by(username=username).first()
 
 class Sales(db.Model):
     id = db.Column(db.Integer, primary_key=True)

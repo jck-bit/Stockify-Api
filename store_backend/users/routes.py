@@ -1,7 +1,7 @@
 from flask import Blueprint,jsonify, request
 from store_backend import db, app
 from store_backend.models import Sales, User,Product
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 from flask_login import login_user, current_user, logout_user, login_required
 import uuid
 from flask_jwt_extended import create_access_token
@@ -58,34 +58,27 @@ def promote_user(public_id):
     return jsonify({"message": "user has been promoted"})
 
 @users.route('/login', methods=["POST"])
-def create_token():
+def auth_user():
 
     username = request.json.get("username", None)
     password = request.json.get("password", None)
     
-    if username == "":
-        msg = "The username field cannot be empty"
-        return {"status": "Failed", "message": msg},401
-    if password == "":
-        msg = "The password field cannot be empty"
-        return {"status": "Failed", "message": msg}, 401
+    user = User.get_user_by_username(username=username)
+
+    if not user or not user.check_password(password):
+        return jsonify({'message': 'Invalid credentials'}), 401
     
-    user = User.query.filter_by(username=username).first()
-
-    if not user or not check_password_hash(user.password, password):
-        return {"status":"Failed","message": "Invalid username or password"}, 401
-
-    login_user(user)
     access_token = create_access_token(identity=username)
-    return  {"status":"success","token":access_token}, 200
+    login_user(user)
+    user_dict = {'id': user.id, 'username': user.username, 'public_id': user.public_id}
+    return ({'message': 'Login successful', 'accessToken':access_token, 'user': user_dict}), 200
+        
 
 @users.route('/users/auth', methods=['POST'])
 def create_user():
 
-    
     username = request.json.get("username", None)
     password = request.json.get("password", None)
-    confirm_password = request.json.get('confirm_password')
 
     if username =="":
          msg = "The username field cannot be empty"
@@ -94,10 +87,7 @@ def create_user():
     if password == "":
         msg = "The password field cannot be empty"
         return {"status": "Failed", "message": msg}, 401
-    
-    if confirm_password != password:
-        msg = "The two passwords must match"
-        return {"status": "Failed", "message": msg}, 401
+
     
     user = User.query.filter_by(username=username).first()
     
@@ -118,9 +108,7 @@ def create_sale():
     product_id = request.json.get('product_id')
     quantity = request.json.get('quantity')
 
-
     product = Product.query.get(product_id)
-
 
     if int(quantity) > int(product.quantity):
         return jsonify({'error': 'Requested quantity is not available'})
@@ -136,4 +124,6 @@ def create_sale():
     db.session.add(sale)
     db.session.commit()
 
-    return jsonify({'id':sale.id, 'user_id':sale.user_id, 'product_id': sale.id, 'date_sold': sale.date_sold, 'total_sales':sale.total_sales})
+    return jsonify({'id':sale.id, 'user_id':sale.user_id,
+                     'product_id': sale.id, 'date_sold': sale.date_sold, 
+                     'total_sales':sale.total_sales})
