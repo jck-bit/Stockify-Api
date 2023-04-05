@@ -13,7 +13,7 @@
       }
     ],
     "env": {
-      "FLASK_APP": "app",
+      "FLASK_APP": "app.py",
       "FLASK_ENV": "production"
     }
   }
