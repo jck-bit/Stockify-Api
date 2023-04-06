@@ -11,6 +11,7 @@ flask-mail = "*"
 flask-jwt-extended = "*"
 flask-cors = "*"
 flask-login = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 

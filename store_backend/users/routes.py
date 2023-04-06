@@ -78,24 +78,29 @@ def auth_user():
 def create_user():
 
     username = request.json.get("username", None)
+    email = request.json.get("username", None)
     password = request.json.get("password", None)
 
     if username =="":
          msg = "The username field cannot be empty"
          return {"status": "Failed", "message": msg},401
 
+    if email =="":
+         msg = "The email field cannot be empty"
+         return {"status": "Failed", "message": msg},401
+    
     if password == "":
         msg = "The password field cannot be empty"
         return {"status": "Failed", "message": msg}, 401
 
     
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(email=email).first()
     
     if user:
-        msg = "User alraedy exists.Try another username"
+        msg = "user with that email alraedy exists"
         return {"status": "Failed", "message": msg}, 401
     
-    new_user = User(public_id=str(uuid.uuid4()), username=username, password=generate_password_hash(password), admin=False)
+    new_user = User(public_id=str(uuid.uuid4()), username=username, email=email,password=generate_password_hash(password), admin=False)
     db.session.add(new_user)
     db.session.commit()
 
