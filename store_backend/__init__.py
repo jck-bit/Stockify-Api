@@ -1,19 +1,21 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_migrate import Migrate
-
+from datetime import timedelta
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 
 db = SQLAlchemy()
+JWTManager(app)
 Migrate(app, db)
 db.init_app(app)
 CORS(app)
