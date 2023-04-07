@@ -1,5 +1,5 @@
 from flask import Blueprint,jsonify, request
-from store_backend import db, app
+from store_backend import db, app, bcrypt
 from store_backend.models import Sales, User,Product
 from werkzeug.security import generate_password_hash
 from flask_login import login_user, current_user, logout_user, login_required
@@ -60,52 +60,37 @@ def promote_user(public_id):
 @users.route('/login', methods=["POST"])
 def auth_user():
 
-    username = request.json.get("username", None)
+    email = request.json.get("email", None)
     password = request.json.get("password", None)
     
-    user = User.get_user_by_username(username=username)
+    user = User.get_user_by_email(email=email)
 
     if not user or not user.check_password(password):
         return jsonify({'message': 'Invalid credentials'}), 401
     
-    access_token = create_access_token(identity=username)
+    access_token = create_access_token(identity=email)
     login_user(user)
-    user_dict = {'id': user.id, 'username': user.username, 'public_id': user.public_id}
+    user_dict = {'id': user.id, 'username': user.username, 'public_id': user.public_id, 'email':user.email}
     return ({'message': 'Login successful', 'accessToken':access_token, 'user': user_dict}), 200
         
 
-@users.route('/users/auth', methods=['POST'])
-def create_user():
+@app.route('/api/register', methods=['POST'])
+def register():
 
-    username = request.json.get("username", None)
-    email = request.json.get("username", None)
-    password = request.json.get("password", None)
+    username = request.json.get('username', None)
+    email = request.json.get('email', None)
+    password = request.json.get('password', None)
 
-    if username =="":
-         msg = "The username field cannot be empty"
-         return {"status": "Failed", "message": msg},401
+    user = User.get_user_by_email(email=email)
 
-    if email =="":
-         msg = "The email field cannot be empty"
-         return {"status": "Failed", "message": msg},401
-    
-    if password == "":
-        msg = "The password field cannot be empty"
-        return {"status": "Failed", "message": msg}, 401
-
-    
-    user = User.query.filter_by(email=email).first()
-    
     if user:
-        msg = "user with that email alraedy exists"
-        return {"status": "Failed", "message": msg}, 401
-    
-    new_user = User(public_id=str(uuid.uuid4()), username=username, email=email,password=generate_password_hash(password), admin=False)
+        return jsonify({"message":"user with that email alredy exists"})
+    hashed_password = generate_password_hash(password=password)
+    new_user = User(public_id=str(uuid.uuid4()), username=username, email=email, password=hashed_password, admin=False)
     db.session.add(new_user)
     db.session.commit()
-
-    msg = "New user created"
-    return {"status":"success","message":msg}
+    
+    return jsonify({'message': 'User created successfully!'}), 201
 
 @users.route('/users/sales', methods=['POST'])
 def create_sale():

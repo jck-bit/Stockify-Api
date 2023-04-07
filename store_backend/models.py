@@ -1,4 +1,4 @@
-from store_backend import db, login_manager
+from store_backend import db, login_manager,bcrypt
 from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -9,14 +9,14 @@ def user_loader(user_id):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    public_id = db.Column(db.String(50), unique=True)
-    username = db.Column(db.String(50))
-    password = db.Column(db.String(50))
-    email = db.Column(db.String(50), unique=True)
-    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
+    public_id = db.Column(db.String)
+    username = db.Column(db.String)
+    password = db.Column(db.String)
+    email = db.Column(db.String)
     admin = db.Column(db.Boolean)
     sales = db.relationship('Sales', backref='user', lazy='dynamic',
                         primaryjoin="User.id == Sales.user_id")
+
     def __repr__ (self) :
         return f"User('{self.name}', '{self.sales}', '{self.public_id}')"
     
@@ -26,8 +26,8 @@ class User(db.Model, UserMixin):
     def  check_password(self, password):
         return check_password_hash(self.password, password)
     
-    def get_user_by_username(username):
-        return User.query.filter_by(username=username).first()
+    def get_user_by_email(email):
+        return User.query.filter_by(email=email).first()
 
 class Sales(db.Model):
     id = db.Column(db.Integer, primary_key=True)
