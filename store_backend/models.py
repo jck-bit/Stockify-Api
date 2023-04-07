@@ -12,6 +12,7 @@ class User(db.Model, UserMixin):
     public_id = db.Column(db.String(50), unique=True)
     username = db.Column(db.String(50))
     password = db.Column(db.String(50))
+    email = db.Column(db.String(50), unique=True)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     admin = db.Column(db.Boolean)
     sales = db.relationship('Sales', backref='user', lazy='dynamic',
