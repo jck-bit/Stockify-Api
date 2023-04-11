@@ -1,5 +1,5 @@
 from flask import Blueprint,jsonify, request
-from store_backend import db, app, bcrypt
+from store_backend import db, app
 from store_backend.models import Sales, User,Product
 from werkzeug.security import generate_password_hash
 from flask_login import login_user, current_user, logout_user, login_required
