@@ -109,7 +109,6 @@ def create_sale():
 
     date_sold = datetime.datetime.now()
 
-
     sale = Sales(user_id=user_id, product_id=product_id, date_sold=date_sold, total_sales=total_sales)
     db.session.add(sale)
     db.session.commit()
@@ -117,3 +116,9 @@ def create_sale():
     return jsonify({'id':sale.id, 'user_id':sale.user_id,
                      'product_id': sale.id, 'date_sold': sale.date_sold, 
                      'total_sales':sale.total_sales})
+
+@users.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return jsonify({"message":"Logout successfull"})
