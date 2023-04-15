@@ -26,7 +26,6 @@ def get_all_users():
         user_list.append(user_dict)
     
     return jsonify({'users': user_list})
-
 @users.route('/users/<public_id>', methods=['GET'])
 def get_one_user(public_id):
 
@@ -94,26 +93,38 @@ def register():
 
 @users.route('/users/sales', methods=['POST'])
 def create_sale():
+    product_ids = request.json.get('product_ids')
     user_id = request.json.get('user_id')
-    product_id = request.json.get('product_id')
-    quantity = request.json.get('quantity')
+    quantities = request.json.get('quantities')
 
-    product = Product.query.get(product_id)
+    if not product_ids or not user_id or not quantities:
+        return jsonify({'error': 'Invalid request body'})
 
-    if int(quantity) > int(product.quantity):
-        return jsonify({'error': 'Requested quantity is not available'})
+    for i in range(len(product_ids)):
+        product = Product.query.get(product_ids[i])
+        
+        if product is None:
+            return jsonify({'error': f'Product with id {product_ids[i]} not found'})
 
-    total_sales = float(product.price) * int(quantity)
- 
-    product.quantity -= int(quantity)
+        if quantities[i] is None:
+            return jsonify({'error': f'Quantity not specified for product with id {product_ids[i]}'})
+        
+        if int(quantities[i]) > int(product.quantity):
+            return jsonify({'error': f'Requested quantity for product with id {product_ids[i]} is not available'})
 
-    date_sold = datetime.datetime.now()
+        total_sales = float(product.price) * int(quantities[i])
+        product.quantity -= int(quantities[i])
+        date_sold = datetime.datetime.now()
+        sale = Sales(product_id=product_ids[i], user_id=user_id, date_sold=date_sold, total_sales=total_sales)
+        db.session.add(sale)
 
-
-    sale = Sales(user_id=user_id, product_id=product_id, date_sold=date_sold, total_sales=total_sales)
-    db.session.add(sale)
     db.session.commit()
 
-    return jsonify({'id':sale.id, 'user_id':sale.user_id,
-                     'product_id': sale.id, 'date_sold': sale.date_sold, 
-                     'total_sales':sale.total_sales})
+    return jsonify({'message':'sale created successfully'})
+
+
+@users.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return jsonify({"message":"Logout successfull"})

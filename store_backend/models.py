@@ -32,9 +32,9 @@ class User(db.Model, UserMixin):
 class Sales(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     total_sales = db.Column(db.Integer)
-    date_sold = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False) 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    date_sold = db.Column(db.DateTime, default=datetime.utcnow)
+    product_id = db.Column(db.Integer, db.ForeignKey('product.id')) 
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return f"Sales('{self.total_sales}','{self.date_sold}')"
@@ -43,8 +43,8 @@ class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     price = db.Column(db.Integer)
-    date_added = db.Column(db.DateTime, nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
+    date_added = db.Column(db.DateTime)
+    quantity = db.Column(db.Integer)
 
     def __repr__(self):
         return f"Products('{self.name}', '{self.price}','{self.quantity}')"

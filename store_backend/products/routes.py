@@ -8,7 +8,7 @@ products = Blueprint('products', __name__)
 def post_product():
     data = request.get_json()
 
-    new_product = Product(name=data['name'], price=data['price'], Quantity=data['Quantity'])
+    new_product = Product(name=data['name'], price=data['price'], quantity=data['quantity'])
     db.session.add(new_product)
     db.session.commit()
 
