@@ -6,7 +6,6 @@ from flask_cors import CORS
 from datetime import timedelta
 from config import Config
 
-
 app = Flask(__name__)
 app.config.from_object(Config)
 

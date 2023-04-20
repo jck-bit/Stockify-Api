@@ -1,5 +1,6 @@
 from flask import Blueprint,jsonify,request
 from store_backend import db
+from flask_login import login_required
 from store_backend.models import Product
 
 products = Blueprint('products', __name__)
@@ -15,6 +16,7 @@ def post_product():
     return jsonify({'message': 'New product Added!'})
 
 @products.route('/products', methods=['GET'])
+@login_required
 def get_all_products():
     products = Product.query.all()
     

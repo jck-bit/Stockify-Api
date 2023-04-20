@@ -45,6 +45,6 @@ class Product(db.Model):
     price = db.Column(db.Integer)
     date_added = db.Column(db.DateTime)
     quantity = db.Column(db.Integer)
-
+    
     def __repr__(self):
         return f"Products('{self.name}', '{self.price}','{self.quantity}')"
