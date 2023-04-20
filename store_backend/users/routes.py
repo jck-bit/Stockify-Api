@@ -98,19 +98,19 @@ def create_sale():
     quantities = request.json.get('quantities')
 
     if not product_ids or not user_id or not quantities:
-        return jsonify({'error': 'Invalid request body'})
+        return jsonify({'error': 'Invalid request body'}),400
 
     for i in range(len(product_ids)):
         product = Product.query.get(product_ids[i])
         
         if product is None:
-            return jsonify({'error': f'Product with id {product_ids[i]} not found'})
+            return jsonify({'error': f'Product with id {product_ids[i]} not found'}),400
 
         if quantities[i] is None:
-            return jsonify({'error': f'Quantity not specified for product with id {product_ids[i]}'})
+            return jsonify({'error': f'Quantity not specified for product with id {product_ids[i]}'}),400
         
         if int(quantities[i]) > int(product.quantity):
-            return jsonify({'error': f'Requested quantity for product with id {product_ids[i]} is not available'})
+            return jsonify({'error': f'Requested quantity for product with id {product_ids[i]} is not available'}),400
 
         total_sales = float(product.price) * int(quantities[i])
         product.quantity -= int(quantities[i])
@@ -120,7 +120,7 @@ def create_sale():
 
     db.session.commit()
 
-    return jsonify({'message':'sale created successfully'})
+    return jsonify({'message':'sale created successfully'}),200
 
 
 @users.route("/logout")

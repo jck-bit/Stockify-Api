@@ -1,7 +1,5 @@
 # Stockify Store Management is a Shopping API 🛒
  This is a backend for the store-manager. its has been written in pyhton using flask it allows users to interact with a virtual store, where they can view products and make purchases.
-
-
 ## 🚀 Getting Started
 
 To get started, clone this repository and install the dependencies:
@@ -40,7 +38,6 @@ To use the API, you need to create an account and authenticate yourself. You can
 - Edit user details
 - Delete a user
 - Custom error handling for invalid requests
-
 
 ## 🛒 Managing Products
 You can manage the products in your store by sending requests to the `/products` endpoint. Here are the available requests:
@@ -140,4 +137,3 @@ Contributions to this project are always welcome!
 # Badges
 
 ![Vercel](https://vercelbadge.vercel.app/api/jck-bit/Stockify-Store-Management)
-
