@@ -65,7 +65,7 @@ def auth_user():
     user = User.get_user_by_email(email=email)
 
     if not user or not user.check_password(password):
-        return jsonify({'message': 'Invalid credentials'}), 401
+        return jsonify({'message': 'Invalid credentials'})
     
     access_token = create_access_token(identity=email)
     login_user(user)
