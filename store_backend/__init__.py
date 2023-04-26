@@ -1,21 +1,41 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import JWTManager, create_access_token,get_jwt,get_jwt_identity
 from flask_cors import CORS
-from datetime import timedelta
+from datetime import timedelta, datetime, timezone
 from config import Config
+import json
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
 db = SQLAlchemy()
-JWTManager(app)
+jwt = JWTManager(app)
 db.init_app(app)
 CORS(app)
 
+@app.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+            data = response.get_json()
+            if type(data) is dict:
+                data["access_token"] = access_token 
+                response.data = json.dumps(data)
+        return response
+    except (RuntimeError, KeyError):
+        # Case where there is not a valid JWT. Just return the original respone
+        return response
+
+
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'users.login'
 
 @app.route('/')
 def home():

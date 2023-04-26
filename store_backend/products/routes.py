@@ -2,10 +2,12 @@ from flask import Blueprint,jsonify,request
 from store_backend import db
 from flask_login import login_required
 from store_backend.models import Product
+from flask_jwt_extended import  jwt_required
 
 products = Blueprint('products', __name__)
 
 @products.route('/products', methods=['POST'])
+@jwt_required()
 def post_product():
     data = request.get_json()
 
@@ -16,7 +18,7 @@ def post_product():
     return jsonify({'message': 'New product Added!'})
 
 @products.route('/products', methods=['GET'])
-@login_required
+@jwt_required()
 def get_all_products():
     products = Product.query.all()
     
@@ -43,6 +45,7 @@ def get_one_product(name):
     return jsonify(product_data)
 
 @products.route('/products/<name>', methods=['PUT'])
+@jwt_required()
 def update_product(name):
     data = request.get_json()
 
