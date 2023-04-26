@@ -1,9 +1,11 @@
 from flask import Blueprint,jsonify, request
 from store_backend.models import Sales
+from flask_jwt_extended import  jwt_required
 
 sales = Blueprint('sales', '__name__')
 
 @sales.route('/sales', methods=['GET'])
+@jwt_required()
 def get_all_sales():
 
     sales = Sales.query.all()
@@ -13,6 +15,7 @@ def get_all_sales():
                                'date':sale.date_sold, 'product':sale.product_id} for sale in sales]})
 
 @sales.route('/sales/<id>')
+@jwt_required()
 def get_sale_by_id(id):
 
     sale = Sales.query.filter_by(id=id).first()

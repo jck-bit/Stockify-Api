@@ -2,14 +2,14 @@ from flask import Blueprint,jsonify, request
 from store_backend import db, app
 from store_backend.models import Sales, User,Product
 from werkzeug.security import generate_password_hash
-from flask_login import login_user, current_user, logout_user, login_required
 import uuid
-from flask_jwt_extended import create_access_token
 import datetime
+from flask_jwt_extended import create_access_token, unset_jwt_cookies, jwt_required
 
 users = Blueprint('users', __name__)
 
 @users.route('/users', methods=['GET'])
+@jwt_required()
 def get_all_users():
 
     users = User.query.all()
@@ -68,9 +68,8 @@ def auth_user():
         return jsonify({'message': 'Invalid credentials'})
     
     access_token = create_access_token(identity=email)
-    login_user(user)
     user_dict = {'id': user.id, 'username': user.username, 'public_id': user.public_id, 'email':user.email}
-    return ({'message': 'Login successful', 'accessToken':access_token, 'user': user_dict}), 200
+    return ({'message': 'Login successful', 'access_token':access_token, 'user': user_dict}), 200
         
 
 @app.route('/api/register', methods=['POST'])
@@ -92,6 +91,7 @@ def register():
     return jsonify({'message': 'User created successfully!'}), 201
 
 @users.route('/users/sales', methods=['POST'])
+@jwt_required()
 def create_sale():
     product_ids = request.json.get('product_ids')
     user_id = request.json.get('user_id')
@@ -124,7 +124,8 @@ def create_sale():
 
 
 @users.route("/logout")
-@login_required
+@jwt_required()
 def logout():
-    logout_user()
-    return jsonify({"message":"Logout successfull"})
+    response = jsonify({"message": "Successfully logged out"})
+    unset_jwt_cookies(response)
+    return response
