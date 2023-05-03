@@ -1,7 +1,18 @@
 from store_backend import db, login_manager
 from datetime import datetime
 from flask_login import UserMixin
+from dotenv import  load_dotenv
+load_dotenv()
 from werkzeug.security import generate_password_hash, check_password_hash
+import base64
+from  supabase import create_client
+import uuid
+import os
+
+url = os.getenv('SUPABASE_URL')
+key = os.getenv('SUPABASE_KEY')
+
+supabase =  create_client(url, key)
 
 @login_manager.user_loader
 def user_loader(user_id):
@@ -14,11 +25,19 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String)
     email = db.Column(db.String)
     admin = db.Column(db.Boolean)
+    image_file = db.Column(db.String(), nullable=False, default='centered.jpeg')
     sales = db.relationship('Sales', backref='user', lazy='dynamic',
                         primaryjoin="User.id == Sales.user_id")
+    
 
-    def __repr__ (self) :
-        return f"User('{self.name}', '{self.sales}', '{self.public_id}')"
+    def __init__(self, **kwargs):
+       super(User, self).__init__(**kwargs)
+       self.image_file = supabase.storage.from_("profile_pics").get_public_url("default.jpeg")
+
+
+    def __repr__(self):
+        return f"User('{self.username}', '{self.sales}', '{self.public_id}')"
+
     
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -26,8 +45,22 @@ class User(db.Model, UserMixin):
     def  check_password(self, password):
         return check_password_hash(self.password, password)
     
+    @staticmethod
     def get_user_by_email(email):
         return User.query.filter_by(email=email).first()
+
+    
+    
+    def save_image(self, image_data):
+        bucket_name = 'profile_pics'
+        file_extension = image_data.split(';')[0].split('/')[1]
+        image_name = str(uuid.uuid4()) + '.' + file_extension
+
+        image_bytes = base64.b64decode(image_data.split(',')[1])
+        supabase.storage().from_(bucket_name).upload(f'{image_name}', image_bytes)
+
+        self.image_file = image_name
+        db.session.commit()
 
 class Sales(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -46,6 +79,19 @@ class Product(db.Model):
     price = db.Column(db.Integer)
     date_added = db.Column(db.DateTime)
     quantity = db.Column(db.Integer)
-    
+    image_file = db.Column(db.String(), nullable=False, default='product_default.jpg')
+
     def __repr__(self):
-        return f"Products('{self.name}', '{self.price}','{self.quantity}')"
+        return f"Product('{self.name}', '{self.price}','{self.quantity}')"
+
+    
+    def save_image(self, image_data):
+        bucket_name = 'product_pics'
+        file_extension = image_data.split(';')[0].split('/')[1]
+        image_name = str(uuid.uuid4()) + '.' + file_extension
+
+        image_bytes = base64.b64decode(image_data.split(',')[1])
+        supabase.storage.from_(bucket_name).upload(f'{image_name}', image_bytes)
+
+        self.image_file = image_name
+        db.session.commit()
