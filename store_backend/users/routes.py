@@ -22,7 +22,7 @@ def get_all_users():
         sales_list = []
         for sale in user.sales.all():
             sales_list.append({'id': sale.id, 'total_sales': sale.total_sales, 'date_sold': sale.date_sold})
-        user_dict = {'id': user.id, 'username': user.username, 'sales': sales_list}
+        user_dict = {'id': user.id, 'username': user.username, 'sales': sales_list, 'image_file':user.image_file}
         user_list.append(user_dict)
     
     return jsonify({'users': user_list})
@@ -65,10 +65,10 @@ def auth_user():
     user = User.get_user_by_email(email=email)
 
     if not user or not user.check_password(password):
-        return jsonify({'message': 'Invalid credentials'})
+        return jsonify({'message': 'Invalid credentials'}),400
     
     access_token = create_access_token(identity=email)
-    user_dict = {'id': user.id, 'username': user.username, 'public_id': user.public_id, 'email':user.email}
+    user_dict = {'id': user.id, 'username': user.username, 'public_id': user.public_id, 'email':user.email, 'user_image':user.image_file}
     return ({'message': 'Login successful', 'access_token':access_token, 'user': user_dict}), 200
         
 
@@ -82,13 +82,29 @@ def register():
     user = User.get_user_by_email(email=email)
 
     if user:
-        return jsonify({"message":"user with that email alredy exists"})
+        return jsonify({"message":"user with that email alredy exists"}),400
     hashed_password = generate_password_hash(password=password)
     new_user = User(public_id=str(uuid.uuid4()), username=username, email=email, password=hashed_password, admin=False)
     db.session.add(new_user)
     db.session.commit()
     
-    return jsonify({'message': 'User created successfully!'}), 201
+    return jsonify({'message': 'Account created successfully!'}), 201
+
+
+@users.route('/users/profile', methods=['POST'])
+@jwt_required()
+def update_profile():
+    username =  request.json.get('username', None)
+    email = request.json.get('email', None)
+
+
+    user = User.get_user_by_email(email=email)
+    if not user:
+        return jsonify({'message': 'user not found'}),400
+    
+    user.username = username
+    db.session.commit()
+
 
 @users.route('/users/sales', methods=['POST'])
 @jwt_required()

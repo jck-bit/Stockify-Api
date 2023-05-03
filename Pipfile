@@ -13,6 +13,7 @@ flask-cors = "*"
 flask-login = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
+supabase = "*"
 
 [dev-packages]
 
