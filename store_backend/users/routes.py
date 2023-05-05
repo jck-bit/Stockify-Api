@@ -94,16 +94,30 @@ def register():
 @users.route('/users/profile', methods=['POST'])
 @jwt_required()
 def update_profile():
-    username =  request.json.get('username', None)
-    email = request.json.get('email', None)
+    content_type = request.headers.get('Content-Type')
+    print(content_type)
 
+    username =  request.form.get('username', None)
+    email = request.form.get('email', None)
+    image_file = request.files.get('image_file', None)
 
     user = User.get_user_by_email(email=email)
     if not user:
         return jsonify({'message': 'user not found'}),400
     
-    user.username = username
+    if username:
+        user.username = username
+    
+    if email:
+        user.email = email
+    
+    if image_file:
+        user.save_image(image_file.filename, image_file.read())
+    
+
     db.session.commit()
+
+    return jsonify({'message': 'user profile updated successfully'}),200
 
 
 @users.route('/users/sales', methods=['POST'])

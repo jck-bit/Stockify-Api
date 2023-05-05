@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String)
     email = db.Column(db.String)
     admin = db.Column(db.Boolean)
-    image_file = db.Column(db.String(), nullable=False, default='centered.jpeg')
+    image_file = db.Column(db.String(), nullable=False, default='default.jpeg')
     sales = db.relationship('Sales', backref='user', lazy='dynamic',
                         primaryjoin="User.id == Sales.user_id")
     
@@ -50,16 +50,16 @@ class User(db.Model, UserMixin):
         return User.query.filter_by(email=email).first()
 
     
-    
-    def save_image(self, image_data):
+    def save_image(self, filename, file_data):
         bucket_name = 'profile_pics'
-        file_extension = image_data.split(';')[0].split('/')[1]
-        image_name = str(uuid.uuid4()) + '.' + file_extension
+        supabase.storage.from_(bucket_name).upload(filename, file_data)
 
-        image_bytes = base64.b64decode(image_data.split(',')[1])
-        supabase.storage().from_(bucket_name).upload(f'{image_name}', image_bytes)
-
-        self.image_file = image_name
+        #remove the old image and create a new one
+        if self.image_file != 'default.jpeg':
+            supabase.storage.from_(bucket_name).remove(self.image_file)
+        
+        image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
+        self.image_file = image_url
         db.session.commit()
 
 class Sales(db.Model):
