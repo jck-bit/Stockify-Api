@@ -50,17 +50,18 @@ class User(db.Model, UserMixin):
         return User.query.filter_by(email=email).first()
 
     
-    
-    def save_image(self, image_data):
+    def save_image(self, filename, file_data):
         bucket_name = 'profile_pics'
-        file_extension = image_data.split(';')[0].split('/')[1]
-        image_name = str(uuid.uuid4()) + '.' + file_extension
+        supabase.storage.from_(bucket_name).upload(filename, file_data)
 
-        image_bytes = base64.b64decode(image_data.split(',')[1])
-        supabase.storage().from_(bucket_name).upload(f'{image_name}', image_bytes)
+        #remove the old image and create a new one
+        if self.image_file != 'default.jpeg':
+            supabase.storage.from_(bucket_name).remove(self.image_file)
 
-        self.image_file = image_name
+        self.image_file = filename
         db.session.commit()
+
+
 
 class Sales(db.Model):
     id = db.Column(db.Integer, primary_key=True)
