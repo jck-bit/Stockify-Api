@@ -81,6 +81,10 @@ class Product(db.Model):
     quantity = db.Column(db.Integer)
     image_file = db.Column(db.String(), nullable=False, default='product_default.jpg')
 
+    def __init__(self, **kwargs):
+       super(Product, self).__init__(**kwargs)
+       self.image_file = supabase.storage.from_("product_pics").get_public_url("product_default.jpg")
+
     def __repr__(self):
         return f"Product('{self.name}', '{self.price}','{self.quantity}')"
 

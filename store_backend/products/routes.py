@@ -26,7 +26,8 @@ def get_all_products():
                                     'name':product.name,
                                     'price':product.price,
                                     'date_added':product.date_added,
-                                    'quantity':product.quantity
+                                    'quantity':product.quantity,
+                                    'product_pic':product.image_file
                                     } for product in products]})
 
 @products.route('/products/<name>', methods=['GET'])
