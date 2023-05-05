@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String)
     email = db.Column(db.String)
     admin = db.Column(db.Boolean)
-    image_file = db.Column(db.String(), nullable=False, default='centered.jpeg')
+    image_file = db.Column(db.String(), nullable=False, default='default.jpeg')
     sales = db.relationship('Sales', backref='user', lazy='dynamic',
                         primaryjoin="User.id == Sales.user_id")
     
@@ -57,11 +57,10 @@ class User(db.Model, UserMixin):
         #remove the old image and create a new one
         if self.image_file != 'default.jpeg':
             supabase.storage.from_(bucket_name).remove(self.image_file)
-
-        self.image_file = filename
+        
+        image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
+        self.image_file = image_url
         db.session.commit()
-
-
 
 class Sales(db.Model):
     id = db.Column(db.Integer, primary_key=True)
