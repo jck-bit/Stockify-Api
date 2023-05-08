@@ -4,7 +4,7 @@ from store_backend.models import Sales, User,Product
 from werkzeug.security import generate_password_hash
 import uuid
 import datetime
-from flask_jwt_extended import create_access_token, unset_jwt_cookies, jwt_required
+from flask_jwt_extended import create_access_token, unset_jwt_cookies, jwt_required,get_jwt_identity
 
 users = Blueprint('users', __name__)
 
@@ -22,7 +22,7 @@ def get_all_users():
         sales_list = []
         for sale in user.sales.all():
             sales_list.append({'id': sale.id, 'total_sales': sale.total_sales, 'date_sold': sale.date_sold})
-        user_dict = {'id': user.id, 'username': user.username, 'sales': sales_list, 'image_file':user.image_file}
+        user_dict = {'id': user.id, 'username': user.username,'email':user.email,'id':user.id, 'sales': sales_list, 'image_file':user.image_file}
         user_list.append(user_dict)
     
     return jsonify({'users': user_list})
@@ -67,7 +67,7 @@ def auth_user():
     if not user or not user.check_password(password):
         return jsonify({'message': 'Invalid credentials'}),400
     
-    access_token = create_access_token(identity=email)
+    access_token = create_access_token(identity=user.id)
     user_dict = {'id': user.id, 'username': user.username, 'public_id': user.public_id, 'email':user.email, 'user_image':user.image_file}
     return ({'message': 'Login successful', 'access_token':access_token, 'user': user_dict}), 200
         
@@ -97,27 +97,33 @@ def update_profile():
     content_type = request.headers.get('Content-Type')
     print(content_type)
 
-    username =  request.form.get('username', None)
+    username = request.form.get('username', None)
     email = request.form.get('email', None)
     image_file = request.files.get('image_file', None)
 
-    user = User.get_user_by_email(email=email)
+    user_id = get_jwt_identity()
+    print(user_id)
+    user = User.query.filter_by(id=user_id).first()
+
     if not user:
-        return jsonify({'message': 'user not found'}),400
+        return jsonify({'message': 'User not found'}), 404
     
     if username:
         user.username = username
     
-    if email:
+    if email and email != user.email:
+        if User.query.filter_by(email=email).first():
+            return jsonify({'message': 'Email address already in use'}), 400
         user.email = email
     
     if image_file:
         user.save_image(image_file.filename, image_file.read())
-    
 
     db.session.commit()
 
-    return jsonify({'message': 'user profile updated successfully'}),200
+    user_dict = {'id': user.id, 'username': user.username, 'public_id': user.public_id, 'email':user.email, 'user_image':user.image_file}
+    return jsonify({'message': 'User profile updated successfully', 'user': user_dict, 'token':create_access_token(identity=user.id)}), 200
+
 
 
 @users.route('/users/sales', methods=['POST'])
