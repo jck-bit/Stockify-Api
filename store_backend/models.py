@@ -81,21 +81,22 @@ class Product(db.Model):
     quantity = db.Column(db.Integer)
     image_file = db.Column(db.String(), nullable=False, default='product_default.jpg')
 
-    def __init__(self, **kwargs):
-       super(Product, self).__init__(**kwargs)
-       self.image_file = supabase.storage.from_("product_pics").get_public_url("product_default.jpg")
+    # def __init__(self, **kwargs):
+    #    super(Product, self).__init__(**kwargs)
+    #    self.image_file = supabase.storage.from_("product_pics").get_public_url("product_default.jpg")
 
     def __repr__(self):
         return f"Product('{self.name}', '{self.price}','{self.quantity}')"
 
     
-    def save_image(self, image_data):
+    def save_image(self, filename, file_data):
         bucket_name = 'product_pics'
-        file_extension = image_data.split(';')[0].split('/')[1]
-        image_name = str(uuid.uuid4()) + '.' + file_extension
+        supabase.storage.from_(bucket_name).upload(filename, file_data)
 
-        image_bytes = base64.b64decode(image_data.split(',')[1])
-        supabase.storage.from_(bucket_name).upload(f'{image_name}', image_bytes)
-
-        self.image_file = image_name
+        #remove the old image and create a new one
+        if self.image_file != 'product_default.jpg':
+            supabase.storage.from_(bucket_name).remove(self.image_file)
+        
+        image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
+        self.image_file = image_url
         db.session.commit()

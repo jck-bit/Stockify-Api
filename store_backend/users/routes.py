@@ -125,7 +125,6 @@ def update_profile():
     return jsonify({'message': 'User profile updated successfully', 'user': user_dict, 'token':create_access_token(identity=user.id)}), 200
 
 
-
 @users.route('/users/sales', methods=['POST'])
 @jwt_required()
 def create_sale():
