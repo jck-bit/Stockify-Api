@@ -124,7 +124,6 @@ def update_profile():
     user_dict = {'id': user.id, 'username': user.username, 'public_id': user.public_id, 'email':user.email, 'user_image':user.image_file}
     return jsonify({'message': 'User profile updated successfully', 'user': user_dict, 'token':create_access_token(identity=user.id)}), 200
 
-
 @users.route('/users/sales', methods=['POST'])
 @jwt_required()
 def create_sale():
@@ -133,19 +132,22 @@ def create_sale():
     quantities = request.json.get('quantities')
 
     if not product_ids or not user_id or not quantities:
-        return jsonify({'error': 'Invalid request body'}),400
+        return jsonify({'error': 'Invalid request body'}), 400
 
     for i in range(len(product_ids)):
         product = Product.query.get(product_ids[i])
-        
+
         if product is None:
-            return jsonify({'error': f'Product with id {product_ids[i]} not found'}),400
+            return jsonify({'error': f'Product with id {product_ids[i]} not found'}), 400
 
         if quantities[i] is None:
-            return jsonify({'error': f'Quantity not specified for product with id {product_ids[i]}'}),400
-        
+            return jsonify({'error': f'Quantity not specified for product with id {product_ids[i]}'}), 400
+
+        if product.quantity is None:
+            return jsonify({'error': f'Quantity not available for product with id {product_ids[i]}'}), 400
+
         if int(quantities[i]) > int(product.quantity):
-            return jsonify({'error': f'Requested quantity for product with id {product_ids[i]} is not available'}),400
+            return jsonify({'error': f'Requested quantity for product with id {product_ids[i]} is not available'}), 400
 
         total_sales = float(product.price) * int(quantities[i])
         product.quantity -= int(quantities[i])
@@ -155,7 +157,8 @@ def create_sale():
 
     db.session.commit()
 
-    return jsonify({'message':'sale created successfully'}),200
+    return jsonify({'message': 'Sale created successfully'}), 200
+
 
 
 @users.route("/logout")

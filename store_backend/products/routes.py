@@ -91,7 +91,7 @@ def update_product(name):
 
     product.name = data['name']
     product.price = data['price']
-    product.Quantity = data['Quantity']
+    product.quantity = data['quantity']
 
     db.session.commit()
 
