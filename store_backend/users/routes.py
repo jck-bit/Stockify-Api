@@ -162,8 +162,6 @@ def create_sale():
     return jsonify({'message': 'Sale created successfully', 'total_sales': total_sales}), 200
 
 
-
-
 @users.route("/logout")
 @jwt_required()
 def logout():
