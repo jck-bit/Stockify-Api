@@ -28,7 +28,7 @@ class User(db.Model, UserMixin):
     image_file = db.Column(db.String(), nullable=False, default='default.jpeg')
     sales = db.relationship('Sales', backref='user', lazy='dynamic',
                         primaryjoin="User.id == Sales.user_id")
-    
+      
 
     def __init__(self, **kwargs):
        super(User, self).__init__(**kwargs)
@@ -100,3 +100,4 @@ class Product(db.Model):
         image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
         self.image_file = image_url
         db.session.commit()
+        
