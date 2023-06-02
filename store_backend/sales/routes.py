@@ -12,7 +12,7 @@ def get_all_sales():
     
     return jsonify({'sales': [{'id': sale.id, 
                                'total_sale':sale.total_sales, 'user': sale.user_id, 
-                               'date':sale.date_sold.strftime("%Y-%m-%d"), 'product':sale.product_id} for sale in sales]})
+                               'date':sale.date_sold.strftime("%A, %d/%m"), 'product':sale.product_id} for sale in sales]})
 
 @sales.route('/sales/<id>')
 @jwt_required()
