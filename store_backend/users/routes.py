@@ -89,7 +89,7 @@ def register():
     db.session.commit()
     
     return jsonify({'message': 'Account created successfully!'}), 201
-
+ 
 
 @users.route('/users/profile', methods=['POST'])
 @jwt_required()
@@ -149,19 +149,18 @@ def create_sale():
             return jsonify({'error': f'Quantity not available for product with id {product_ids[i]}'}), 400
 
         if int(quantities[i]) > int(product.quantity):
-            return jsonify({'error': f'Requested quantity for product with id {product_ids[i]} is not available'}), 400
+              return jsonify({'error': f'Requested quantity for product with id {product_ids[i]} is not available'}), 400
 
         total_sales += float(product.price) * int(quantities[i])  # Add product sale to total sales
         product.quantity -= int(quantities[i])
-        date_sold = datetime.datetime.now()
+        #the date will retun only the day and month
+        date_sold = datetime.datetime.now().strftime("%d-%m-%Y")
         sale = Sales(product_id=product_ids[i], user_id=user_id, date_sold=date_sold, total_sales=total_sales)
         db.session.add(sale)
 
     db.session.commit()
 
     return jsonify({'message': 'Sale created successfully', 'total_sales': total_sales}), 200
-
-
 
 
 @users.route("/logout")
