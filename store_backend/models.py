@@ -78,6 +78,7 @@ class Product(db.Model):
     name = db.Column(db.String(50))
     price = db.Column(db.Integer)
     date_added = db.Column(db.DateTime)
+    description = db.Column(db.String)
     quantity = db.Column(db.Integer)
     image_file = db.Column(db.String(), nullable=False, default='product_default.jpg')
 

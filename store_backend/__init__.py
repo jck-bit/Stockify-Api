@@ -6,11 +6,14 @@ from flask_cors import CORS
 from datetime import timedelta, datetime, timezone
 from config import Config
 import json
+# from flask_migrate import Migrate
+
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
 db = SQLAlchemy()
+# migrate = Migrate(app, db)
 jwt = JWTManager(app)
 db.init_app(app)
 CORS(app)
