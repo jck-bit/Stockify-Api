@@ -25,12 +25,12 @@ def post_product():
     name = request.form.get('name', None)
     price = request.form.get('price', None)
     quantity = request.form.get('quantity', None)
-
+    description = request.form.get('description', None)
     image_file = request.files.get('product_pic', None)
 
     #if no product pic, the product will get a default pic from the supabase bucket
     if not image_file:
-        image_file = supabase.storage.from_("product_pics").get_public_url("product_default.jpg")
+        image_url = supabase.storage.from_("product_pics").get_public_url("product_default.jpg")
     else:
         filename = secure_filename(image_file.filename)
         file_data = image_file.read()
@@ -44,7 +44,7 @@ def post_product():
 
         image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
 
-    new_product = Product(name=name, price=price, quantity=quantity, image_file=image_url)
+    new_product = Product(name=name, price=price, quantity=quantity,description=description, image_file=image_url)
     db.session.add(new_product)
     db.session.commit()
 
@@ -61,7 +61,8 @@ def get_all_products():
                                     'price':product.price,
                                     'date_added':product.date_added,
                                     'quantity':product.quantity,
-                                    'product_pic':product.image_file
+                                    'product_pic':product.image_file,
+                                    'description':product.description
                                     } for product in products]})
 
 @products.route('/products/<name>', methods=['GET'])
