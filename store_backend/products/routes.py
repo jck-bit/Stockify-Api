@@ -16,6 +16,7 @@ supabase =  create_client(url, key)
 
 
 
+
 products = Blueprint('products', __name__)
 
 @products.route('/products', methods=['POST'])
@@ -80,23 +81,48 @@ def get_one_product(name):
 
     return jsonify(product_data)
 
-@products.route('/products/<name>', methods=['PUT'])
+
+@products.route('/products/<id>', methods=['PUT'])
 @jwt_required()
-def update_product(name):
-    data = request.get_json()
+def update_product(id):
+    name = request.json.get('name')
+    price = request.json.get('price')
+    quantity = request.json.get('quantity')
+    description = request.json.get('description')
+    image_file = request.json.get('image')
 
-    product = Product.query.filter_by(name=name).first()
-
+    product = Product.query.filter_by(id=id).first()
     if not product:
         return jsonify({'message': 'No product found'})
 
-    product.name = data['name']
-    product.price = data['price']
-    product.quantity = data['quantity']
+    if not image_file:
+        image_url = supabase.storage.from_("product_pics").get_public_url("product_default.jpg")
+    else:
+        # Upload the new image to the supabase bucket
+        filename = secure_filename(image_file['filename'])
+        file_data = image_file['data']
+        bucket_name = 'product_pics'
+        supabase.storage.from_(bucket_name).upload(filename, file_data)
+
+        # Remove the old image and create a new one
+        if product.image_file != 'product_default.jpg':
+            supabase.storage.from_(bucket_name).remove(product.image_file)
+
+        image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
+
+    product.name = name
+    product.price = price
+    product.quantity = quantity
+    product.description = description
+    product.image_file = image_url
 
     db.session.commit()
+    return jsonify({'message': 'Product updated successfully'})
 
-    return jsonify({'message': 'Product has been updated!'})
+
+
+    db.session.commit()
+    return jsonify({'message': 'Product updated successfully'})
 
 
 @products.route('/products/<name>', methods=['DELETE'])
