@@ -6,11 +6,16 @@ from flask_cors import CORS
 from datetime import timedelta, datetime, timezone
 from config import Config
 import json
-# from flask_migrate import Migrate
+from dotenv import load_dotenv
+from os import environ
+
+load_dotenv('.env')
 
 
 app = Flask(__name__)
+
 app.config.from_object(Config)
+# app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('SQLALCHEMY_DATABASE_URI')
 
 db = SQLAlchemy()
 # migrate = Migrate(app, db)
