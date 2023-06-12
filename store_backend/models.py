@@ -4,7 +4,6 @@ from flask_login import UserMixin
 from dotenv import  load_dotenv
 load_dotenv()
 from werkzeug.security import generate_password_hash, check_password_hash
-import base64
 from  supabase import create_client
 import uuid
 import os
@@ -20,7 +19,7 @@ def user_loader(user_id):
 
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    public_id = db.Column(db.String)
+    public_id = db.Column(db.String, default=str(uuid.uuid4()))
     username = db.Column(db.String)
     password = db.Column(db.String)
     email = db.Column(db.String)
@@ -73,18 +72,17 @@ class Sales(db.Model):
         return f"Sales('{self.total_sales}','{self.date_sold}')"
 
 class Product(db.Model):
-    
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     price = db.Column(db.Integer)
     date_added = db.Column(db.DateTime)
-    description = db.Column(db.String)
+    description = db.Column(db.String(400))
     quantity = db.Column(db.Integer)
     image_file = db.Column(db.String(), nullable=False, default='product_default.jpg')
 
-    # def __init__(self, **kwargs):
-    #    super(Product, self).__init__(**kwargs)
-    #    self.image_file = supabase.storage.from_("product_pics").get_public_url("product_default.jpg")
+    def __init__(self, **kwargs):
+       super(Product, self).__init__(**kwargs)
+       self.image_file = supabase.storage.from_("product_pics").get_public_url("product_default.jpg")
 
     def __repr__(self):
         return f"Product('{self.name}', '{self.price}','{self.quantity}')"
@@ -101,4 +99,4 @@ class Product(db.Model):
         image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
         self.image_file = image_url
         db.session.commit()
-        
+    

@@ -1,6 +1,5 @@
 from flask import Blueprint,jsonify,request
 from store_backend import db
-from flask_login import login_required
 from store_backend.models import Product
 from flask_jwt_extended import  jwt_required
 from datetime import datetime
@@ -11,11 +10,7 @@ from werkzeug.utils import secure_filename
 
 url = os.getenv('SUPABASE_URL')
 key = os.getenv('SUPABASE_KEY')
-
 supabase =  create_client(url, key)
-
-
-
 
 products = Blueprint('products', __name__)
 
@@ -46,10 +41,20 @@ def post_product():
         image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
 
     new_product = Product(name=name, price=price, quantity=quantity,description=description, image_file=image_url)
+    
     db.session.add(new_product)
     db.session.commit()
 
-    return jsonify({'message': 'Product added successfully'})
+
+    serialized_product = {
+        'id': new_product.id,
+        'name': new_product.name,
+        'price': new_product.price,
+        'quantity': new_product.quantity,
+        'description': new_product.description,
+        'image_file': new_product.image_file
+    }
+    return jsonify({'message': 'Product added successfully', 'product': serialized_product}), 201
 
 
 @products.route('/products', methods=['GET'])
@@ -72,7 +77,7 @@ def get_one_product(name):
 
     if not product:
 
-        return jsonify({'message': 'No product found'})
+        return jsonify({'message': 'No product found'}), 404
 
     product_data = {}
     product_data['name'] = product.name
@@ -93,7 +98,7 @@ def update_product(id):
 
     product = Product.query.filter_by(id=id).first()
     if not product:
-        return jsonify({'message': 'No product found'})
+        return jsonify({'message': 'No product found'}),404
 
     if not image_file:
         image_url = supabase.storage.from_("product_pics").get_public_url("product_default.jpg")
@@ -117,22 +122,20 @@ def update_product(id):
     product.image_file = image_url
 
     db.session.commit()
-    return jsonify({'message': 'Product updated successfully'})
+    #returning the updated product as json
+    product_dict = {"id":product.id,"name":product.name,"price":product.price,"quantity":product.quantity,"description":product.description,"product_pic":product.image_file,"date_added":product.date_added}
+    return jsonify({'message': 'Product updated successfully', 'product': product_dict}), 200
 
 
-
-    db.session.commit()
-    return jsonify({'message': 'Product updated successfully'})
-
-
-@products.route('/products/<name>', methods=['DELETE'])
-def delete_product(name):
-    product = Product.query.filter_by(name=name).first()
+@products.route('/products/<id>', methods=['DELETE'])
+@jwt_required()
+def delete_product(id):
+    product = Product.query.filter_by(id=id).first()
 
     if not product:
-        return jsonify({'message': 'No product found'})
+        return jsonify({'message': 'Product does not Exist'}), 404
 
     db.session.delete(product)
     db.session.commit()
 
-    return jsonify({'message': 'Product has been deleted!'})
+    return jsonify({'message': 'Product has been deleted successfully!'}), 200
