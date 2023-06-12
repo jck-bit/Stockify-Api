@@ -41,10 +41,20 @@ def post_product():
         image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
 
     new_product = Product(name=name, price=price, quantity=quantity,description=description, image_file=image_url)
+    
     db.session.add(new_product)
     db.session.commit()
 
-    return jsonify({'message': 'Product added successfully'}), 200
+
+    serialized_product = {
+        'id': new_product.id,
+        'name': new_product.name,
+        'price': new_product.price,
+        'quantity': new_product.quantity,
+        'description': new_product.description,
+        'image_file': new_product.image_file
+    }
+    return jsonify({'message': 'Product added successfully', 'product': serialized_product}), 201
 
 
 @products.route('/products', methods=['GET'])
