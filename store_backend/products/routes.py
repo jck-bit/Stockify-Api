@@ -54,7 +54,7 @@ def post_product():
         'description': new_product.description,
         'image_file': new_product.image_file
     }
-    return jsonify({'message': 'Product added successfully', 'product': serialized_product}), 201
+    return jsonify({'message': 'Product added successfully', 'product': serialized_product}), 201,
 
 
 @products.route('/products', methods=['GET'])
@@ -65,7 +65,7 @@ def get_all_products():
     return jsonify ({'products':  [{'id':product.id, 
                                     'name':product.name,
                                     'price':product.price,
-                                    'date_added':product.date_added,
+                                    'date_added':product.date_added, 
                                     'quantity':product.quantity,
                                     'product_pic':product.image_file,
                                     'description':product.description
