@@ -154,7 +154,7 @@ def create_sale():
         total_sales += float(product.price) * int(quantities[i])  # Add product sale to total sales
         product.quantity -= int(quantities[i])
         #the date will retun only the day and month
-        date_sold = datetime.datetime.now().strftime("%d-%m-%Y")
+        date_sold = datetime.datetime.now()
         sale = Sales(product_id=product_ids[i], user_id=user_id, date_sold=date_sold, total_sales=total_sales)
         db.session.add(sale)
 
