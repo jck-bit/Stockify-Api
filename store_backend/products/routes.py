@@ -24,37 +24,38 @@ def post_product():
     description = request.form.get('description', None)
     image_file = request.files.get('product_pic', None)
 
-    #if no product pic, the product will get a default pic from the supabase bucket
-    if not image_file:
-        image_url = supabase.storage.from_("product_pics").get_public_url("product_default.jpg")
-    else:
-        filename = secure_filename(image_file.filename)
+    # create an instance of the Product class
+    product = Product()
+
+    # if there is an image file, save it
+    if image_file:
         file_data = image_file.read()
-        bucket_name = 'product_pics'
-        supabase.storage.from_(bucket_name).upload(filename, file_data)
+        product.save_image(image_file.filename, file_data)
 
-        # remove the old image and create a new one
-        product = Product.query.filter_by(name=name).first()
-        if product and product.image_file != 'product_default.jpg':
-            supabase.storage.from_(bucket_name).remove(product.image_file)
+    # set the product attributes
+    product.name = name
+    product.price = price
+    product.quantity = quantity
+    product.description = description
 
-        image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
-
-    new_product = Product(name=name, price=price, quantity=quantity,description=description, image_file=image_url)
-    
-    db.session.add(new_product)
+    # add the product to the database
+    db.session.add(product)
     db.session.commit()
 
-
     serialized_product = {
-        'id': new_product.id,
-        'name': new_product.name,
-        'price': new_product.price,
-        'quantity': new_product.quantity,
-        'description': new_product.description,
-        'image_file': new_product.image_file
+        'id': product.id,
+        'name': product.name,
+        'price': product.price,
+        'date_added': product.date_added,
+        'quantity': product.quantity,
+        'product_pic': product.image_file,
+        'description': product.description
     }
-    return jsonify({'message': 'Product added successfully', 'product': serialized_product}), 201,
+
+    return jsonify({
+        'message': 'Product created successfully',
+        'product': serialized_product
+    })
 
 
 @products.route('/products', methods=['GET'])

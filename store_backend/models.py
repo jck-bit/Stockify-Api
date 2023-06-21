@@ -78,7 +78,7 @@ class Product(db.Model):
     date_added = db.Column(db.DateTime)
     description = db.Column(db.String(400))
     quantity = db.Column(db.Integer)
-    image_file = db.Column(db.String(), nullable=False, default='product_default.jpg')
+    image_file = db.Column(db.String(), nullable=True, default=None)
 
     def __init__(self, **kwargs):
        super(Product, self).__init__(**kwargs)
