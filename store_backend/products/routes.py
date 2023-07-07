@@ -38,6 +38,7 @@ def post_product():
     product.quantity = quantity
     product.description = description
 
+
     # add the product to the database
     db.session.add(product)
     db.session.commit()
@@ -101,26 +102,27 @@ def update_product(id):
     if not product:
         return jsonify({'message': 'No product found'}),404
 
-    if not image_file:
-        image_url = supabase.storage.from_("product_pics").get_public_url("product_default.jpg")
+    if image_file:
+        file_data = image_file.read()
+        if secure_filename(image_file.filename):
+            #remove the old image
+            if product.image_image_file:
+                supabase.storage.from_('product_pics').remove(product.image_file)
+            
+            product.save_image(image_file.filename, file_data)
+        
+        else:
+            return jsonify({'message': 'Invalid file type'}), 400
+    
     else:
-        # Upload the new image to the supabase bucket
-        filename = secure_filename(image_file['filename'])
-        file_data = image_file['data']
-        bucket_name = 'product_pics'
-        supabase.storage.from_(bucket_name).upload(filename, file_data)
+        product.image_file = product.image_file
 
-        # Remove the old image and create a new one
-        if product.image_file != 'product_default.jpg':
-            supabase.storage.from_(bucket_name).remove(product.image_file)
-
-        image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
 
     product.name = name
     product.price = price
     product.quantity = quantity
     product.description = description
-    product.image_file = image_url
+    
 
     db.session.commit()
     #returning the updated product as json
