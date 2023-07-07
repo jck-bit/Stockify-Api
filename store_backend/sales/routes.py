@@ -27,4 +27,4 @@ def get_sale_by_id(id):
 def get_sales_by_user(id):
     sales = Sales.query.filter_by(user_id=id).all()
     
-    return jsonify({'sales': [{'id': sale.id, 'total_sale':sale.total_sales, 'user': sale.user_id, 'date':sale.date_sold, 'product':sale.product_id} for sale in sales]})
+    return jsonify({'sales': [{'id': sale.id, 'total_sale':sale.total_sales, 'user': sale.user_id, 'date':sale.date_sold.strftime("%A, %d/%m"), 'product':sale.product_id} for sale in sales]})

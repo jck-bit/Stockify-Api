@@ -87,16 +87,19 @@ class Product(db.Model):
     def __repr__(self):
         return f"Product('{self.name}', '{self.price}','{self.quantity}')"
 
-    
     def save_image(self, filename, file_data):
         bucket_name = 'product_pics'
-        supabase.storage.from_(bucket_name).upload(filename, file_data)
 
+        supabase.storage.from_(bucket_name).upload(filename, file_data)
+        
         #remove the old image and create a new one
         if self.image_file != 'product_default.jpg':
             supabase.storage.from_(bucket_name).remove(self.image_file)
-        
+
+        # create  the image_url
         image_url = supabase.storage.from_(bucket_name).get_public_url(filename)
         self.image_file = image_url
+
         db.session.commit()
+
     
